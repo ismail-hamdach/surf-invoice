@@ -1,0 +1,19 @@
+{
+    "dashboard": "Tableau de bord",
+    "quantity": "Quantité",
+    "price": "Prix",
+    "Submitting": "Soumission en cours",
+    "submit": "Soumettre",
+    "FormProduct": "Formulaire de produit",
+    "hello": "Salut 👋",
+    "loginDesc": "Saisissez les informations que vous avez entrées lors de l'inscription",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "remember": "Se souvenir de moi",
+    "forget": "Mot de passe oublié",
+    "total": "Quantité totale",
+    "totalPrice": "Prix total",
+    "raport": "Aperçu des rapports",
+    "listProduct": "Liste des produits",
+    "date": "Date"
+  }

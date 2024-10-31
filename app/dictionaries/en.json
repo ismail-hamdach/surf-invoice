@@ -1,0 +1,19 @@
+{
+  "dashboard": "Dashboard",
+  "quantity": "Quantity",
+  "price": "Price",
+  "Submitting": "Submitting",
+  "submit": "Submit",
+  "FormProduct": "Form Product",
+  "hello": "Hey, Hello 👋",
+  "loginDesc": "Enter the information you entered while registering.",
+  "email": "Email",
+  "password": "Password",
+  "remember": "Remember Me",
+  "forget": "Forget Password",
+  "total": "Total Quantity",
+  "totalPrice": "Total Price",
+  "raport": "Reports Snapshot",
+  "listProduct": "List of Product",
+  "date": "Date"
+}
