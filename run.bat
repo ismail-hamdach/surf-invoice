@@ -16,35 +16,29 @@ set NODEJS_INSTALLER=%TEMP%\nodejs-installer.msi
 set REPO_URL=https://github.com/ismail-hamdach/invoice-calculation.git
 set SQL_FILE_PATH=C:\path\to\db.sql
 
-echo Downloading and installing XAMPP, Git, and Node.js...
+:: Clone the repository
+echo Cloning Git repository...
+git clone %REPO_URL%
+set REPO_NAME=%REPO_URL:~29,-4%
+cd %REPO_NAME%
 
-:: Download XAMPP
-echo Downloading XAMPP...
-curl -L -o %XAMPP_INSTALLER% %XAMPP_URL%
+:: Log in to MySQL and create database
+echo Creating MySQL database...
+"C:\xampp\mysql\bin\mysql.exe" -u root -e "CREATE DATABASE invoice;"
 
-:: Download Git
-echo Downloading Git...
-curl -L -o %GIT_INSTALLER% %GIT_URL%
+:: Import the database
+echo Importing database...
+"C:\xampp\mysql\bin\mysql.exe" -u root invoice < "./invoice.sql"
 
-:: Download Node.js
-echo Downloading Node.js...
-curl -L -o %NODEJS_INSTALLER% %NODEJS_URL%
+:: Run npm commands
+echo Installing npm dependencies...
+npm install
 
-:: Install XAMPP
-echo Installing XAMPP...
-start /wait "" "%XAMPP_INSTALLER%" /S /D=C:\xampp
+echo Building the project...
+npm run build
 
-:: Install Git
-echo Installing Git...
-start /wait "" "%GIT_INSTALLER%" /SILENT
-
-:: Install Node.js
-echo Installing Node.js...
-msiexec /i %NODEJS_INSTALLER% /quiet /norestart
-
-:: Start MySQL
-echo Starting MySQL...
-"C:\xampp\mysql\bin\mysqld.exe" --console
+echo Starting the application...
+npm run start
 
 echo Automation complete!
 pause
