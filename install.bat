@@ -67,7 +67,7 @@ echo Building the project...
 npm run build
 
 echo Starting the application...
-npm start
+npm run start
 
 echo Automation complete!
 pause

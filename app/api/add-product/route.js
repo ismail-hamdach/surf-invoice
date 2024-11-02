@@ -5,10 +5,10 @@ export async function POST(req) {
   const { quantity, price } = await req.json();
 
   const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'invoice'
+    host: process.env.NEXT_DB_HOST,
+    user: process.env.NEXT_DB_USER,
+    password: process.env.NEXT_DB_PWD,
+    database: process.env.NEXT_DB_NAME
   });
 
   try {
