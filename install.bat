@@ -16,6 +16,7 @@ set NODEJS_INSTALLER=%TEMP%\nodejs-installer.msi
 set REPO_URL=https://github.com/ismail-hamdach/invoice-calculation.git
 set SQL_FILE_PATH=C:\path\to\db.sql
 
+
 echo Downloading and installing XAMPP, Git, and Node.js...
 
 :: Download XAMPP
