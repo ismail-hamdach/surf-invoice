@@ -27,6 +27,7 @@ curl -L -o %XAMPP_INSTALLER% %XAMPP_URL%
 echo Downloading Git...
 curl -L -o %GIT_INSTALLER% %GIT_URL%
 
+
 :: Download Node.js
 echo Downloading Node.js...
 curl -L -o %NODEJS_INSTALLER% %NODEJS_URL%
