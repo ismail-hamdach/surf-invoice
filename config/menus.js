@@ -1,4 +1,4 @@
-import { DashBoard } from "@/components/svg";
+import { DashBoard, Authentication, Book } from "@/components/svg";
 
 export const menusConfig = {
   mainNav: [
@@ -14,6 +14,16 @@ export const menusConfig = {
         title: "Dashboard",
         icon: DashBoard,
         href: "/dashboard",
+      },
+      {
+        title: "Commandes",
+        icon: Authentication,
+        href: "/orders",
+      },
+      {
+        title: "Archive",
+        icon: Book,
+        href: "/archive",
       },
     ],
     classic: [
