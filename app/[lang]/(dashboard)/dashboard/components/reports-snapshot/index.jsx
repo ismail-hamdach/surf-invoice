@@ -38,13 +38,19 @@ const ReportsSnapshot = ({ trans, totalQty,
   const tabsTrigger = [
     {
       value: "all",
-      text: trans.total,
-      total: totalQty,
+      text: trans.total_jour || "totale du Jour",
+      total: totalQty + " DH",
       color: "primary",
     },
     {
       value: "event",
-      text: trans.totalPrice,
+      text: trans.total_mois || "Totale du Mois",
+      total: totalPrice + " DH",
+      color: "success",
+    },
+    {
+      value: "event",
+      text: trans.total_annee || "Totale de l'année",
       total: totalPrice + " DH",
       color: "success",
     },
@@ -77,7 +83,7 @@ const ReportsSnapshot = ({ trans, totalQty,
       </CardHeader>
       <CardContent className="p-1 md:p-5">
         <Tabs defaultValue="all">
-          <TabsList className="grid grid-cols-2 lg:grid-cols-2 gap-2 md:gap-6 justify-start w-full bg-transparent h-full">
+          <TabsList className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6 justify-start w-full bg-transparent h-full">
             {tabsTrigger.map((item, index) => (
               <TabsTrigger
                 key={`report-trigger-${index}`}

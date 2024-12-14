@@ -3,8 +3,15 @@ import { useState, useEffect } from "react";
 import ReportsSnapshot from "./components/reports-snapshot";
 import FormGrid from "./components/form-grid";
 import FixedHeader from "./components/fixed-header";
-import Card from "@/components/ui/card-snippet";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast as reToast } from "react-hot-toast";
+import BasicDataTable from "./basic-table";
+
 
 const DashboardPageView = ({ trans }) => {
   const [totals, setTotals] = useState({ totalQuantity: 0, totalPrice: 0, list: [] });
@@ -46,18 +53,21 @@ const DashboardPageView = ({ trans }) => {
 
   return (
     <div className="space-y-6 mt-6">
-      <div className="flex items-center flex-wrap justify-between gap-4">
-        <div className="text-2xl font-medium text-default-800 ">
-          {trans?.archive || "Archivage" }
-        </div>
-        {/* <DatePickerWithRange /> */}
-      </div>
+
       {/* reports area */}
 
-      
-      <Card title={trans.listProduct}>
-        <FixedHeader trans={trans} data={totals.data} />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{trans?.archive || "Archivage"}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <BasicDataTable />
+        </CardContent>
       </Card>
+
+
+      {/* . */}
 
     </div>
   );
