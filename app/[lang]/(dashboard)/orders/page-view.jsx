@@ -48,13 +48,11 @@ const DashboardPageView = ({ trans }) => {
     <div className="space-y-6 mt-6">
       <div className="flex items-center flex-wrap justify-between gap-4">
         <div className="text-2xl font-medium text-default-800 ">
-          {trans?.dashboard}
+          {trans?.orders || "Commandes"}
         </div>
         {/* <DatePickerWithRange /> */}
       </div>
       {/* reports area */}
-
-      <ReportsSnapshot trans={trans} totalQty={totals?.totalQuantity || 0} totalPrice={totals?.totalPrice || 0} />
 
       <div className="space-y-5">
         <div className="grid grid-cols-1 gap-6">

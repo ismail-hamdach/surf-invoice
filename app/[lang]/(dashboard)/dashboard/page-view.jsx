@@ -55,14 +55,8 @@ const DashboardPageView = ({ trans }) => {
       {/* reports area */}
 
       <ReportsSnapshot trans={trans} totalQty={totals?.totalQuantity || 0} totalPrice={totals?.totalPrice || 0} />
+      <ReportsSnapshot title={""} trans={trans} totalQty={totals?.totalQuantity || 0} totalPrice={totals?.totalPrice || 0} />
 
-      <div className="space-y-5">
-        <div className="grid grid-cols-1 gap-6">
-          <Card title={trans.FormProduct}>
-            <FormGrid trans={trans} submit={handleSubmit} />
-          </Card>
-        </div>
-      </div>
       <Card title={trans.listProduct}>
         <FixedHeader trans={trans} data={totals.data} />
       </Card>
