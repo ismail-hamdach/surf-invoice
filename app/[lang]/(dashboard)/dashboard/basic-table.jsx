@@ -261,10 +261,10 @@ export function BasicDataTable() {
     const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
     const workbook = XLSX.utils.book_new(); // Create a new workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
-  
+
     // Generate a file name
     const fileName = "table_data.xlsx";
-  
+
     // Save the workbook
     XLSX.writeFile(workbook, fileName);
   };
@@ -316,7 +316,7 @@ export function BasicDataTable() {
 
   return (
     <>
-      <div className="flex items-center flex-wrap gap-2 ">
+      <div className="flex items-center flex-wrap gap-2">
         <Input
           placeholder="Filter Nom..."
           value={table.getColumn("nom")?.getFilterValue() || ""}
@@ -325,22 +325,6 @@ export function BasicDataTable() {
           }
           className="max-w-sm min-w-[200px] h-10"
         />
-
-        <Button asChild variant="outline" className="text-xs font-semibold text-primary-500">
-          <Link href="#" onClick={() => {
-            exportToExcel()
-          }}>
-            <Download className="w-3.5 h-3.5 ltr:mr-1.5 rtl:ml-1.5" />
-            <span>Rapport Excel</span>
-          </Link>
-        </Button>
-        <Button className="text-xs font-semibold " onClick={() => {
-          printTable()
-        }}>
-          <Icon icon="heroicons:printer" className="w-5 h-5 ltr:mr-1 rtl:ml-1" /> Imprimer
-        </Button>
-
-        <DatePickerWithRange />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -5,6 +5,7 @@ import FormGrid from "./components/form-grid";
 import FixedHeader from "./components/fixed-header";
 import Card from "@/components/ui/card-snippet";
 import { toast as reToast } from "react-hot-toast";
+import BasicDataTable from "./basic-table";
 
 const DashboardPageView = ({ trans }) => {
   const [totals, setTotals] = useState({ totalQuantity: 0, totalPrice: 0, list: [] });
@@ -57,7 +58,8 @@ const DashboardPageView = ({ trans }) => {
       <ReportsSnapshot trans={trans} totalQty={totals?.totalQuantity || 0} totalPrice={totals?.totalPrice || 0} />
 
       <Card title={trans.listProduct}>
-        <FixedHeader trans={trans} data={totals.data} />
+        <BasicDataTable />
+        {/* <FixedHeader trans={trans} data={totals.data} /> */}
       </Card>
 
     </div>

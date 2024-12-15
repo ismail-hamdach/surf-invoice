@@ -9,6 +9,8 @@ const FormGrid = ({ trans, submit }) => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [dateSortieType, setDateSortieType] = useState("text");
+  const [dateEntreeType, setDateEntreeType] = useState("text");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,20 +71,24 @@ const FormGrid = ({ trans, submit }) => {
         </div>
         <div className="col-span-1">
           <Input
-            type="datetime-local"
+            type={dateSortieType}
             name="date_sortie"
             value={formData.date_sortie}
             onChange={handleChange}
+            onBlur={() => setDateSortieType("text")} // {{ edit_3 }}
+            onFocus={() => setDateSortieType("datetime-local")} // {{ edit_4 }}
             placeholder={trans.form_date_sortie || "Date de la Sortie"}
             required
           />
         </div>
         <div className="col-span-1">
           <Input
-            type="datetime-local"
+            type={dateEntreeType}
             name="date_retour"
             value={formData.date_retour}
             onChange={handleChange}
+            onBlur={() => setDateEntreeType("text")} // {{ edit_3 }}
+            onFocus={() => setDateEntreeType("datetime-local")} // {{ edit_4 }}
             placeholder={trans.form_date_retour || "Date du retour"}
             required
           />
@@ -128,7 +134,7 @@ const FormGrid = ({ trans, submit }) => {
             name="note"
             value={formData.note}
             onChange={handleChange}
-            placeholder={trans.form_note || "note"}
+            placeholder={trans.form_note || "Note"}
             required
           />
         </div>

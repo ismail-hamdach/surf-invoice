@@ -61,7 +61,7 @@ const DashboardPageView = ({ trans }) => {
         <CardHeader>
           <CardTitle>{trans?.archive || "Archivage"}</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <BasicDataTable />
         </CardContent>
       </Card>
