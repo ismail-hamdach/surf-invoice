@@ -13,10 +13,17 @@ import { formatDate, formatTime } from "@/lib/utils";
 const FixedHeader = ({ trans, data = [] }) => {
   const columns = [
     "Id",
-    trans.quantity,
-    trans.price,
-    trans.totalPrice,
-    trans.date
+    "Nom",
+    "Numero de Telephone",
+    "Nombre des Jours",
+    "Numéro de la Planche",
+    "Date Sortie",
+    "Date Rentrée",
+    "Prix Planche",
+    "Prix Combine",
+    "Prix Cours",
+    "Note",
+
   ]
   return (
 
@@ -38,7 +45,7 @@ const FixedHeader = ({ trans, data = [] }) => {
             <TableCell>{item.id}</TableCell>
             <TableCell>{item.quantity}</TableCell>
             <TableCell>{item.price} DH</TableCell>
-            <TableCell>{item.quantity * item.price  + " DH"}</TableCell>
+            <TableCell>{item.quantity * item.price + " DH"}</TableCell>
             <TableCell>{formatDate(item.created_at) + " " + formatTime(item.created_at)}</TableCell>
           </TableRow>
         ))}

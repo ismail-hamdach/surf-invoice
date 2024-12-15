@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import * as XLSX from "xlsx";
 
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import {
@@ -38,129 +39,195 @@ import { Download } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { data } from "./data";
+import { testData, data } from "./data";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 
+// const columns = [
+//   "Id",
+//   "Nom",
+//   "Numero de Telephone",
+//   "Nombre des Jours",
+//   "Numéro de la Planche",
+//   "Date Sortie",
+//   "Date Rentrée",
+//   "Prix Planche",
+//   "Prix Combine",
+//   "Prix Cours",
+//   "Note",
+
+// ]
+
+
+
 const columns = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "user",
-    header: "User",
-    cell: ({ row }) => (
-      <div className="  font-medium  text-card-foreground/80">
-        <div className="flex space-x-3  rtl:space-x-reverse items-center">
-          <Avatar className=" rounded-full">
-            <AvatarImage src={row?.original?.user.avatar} />
-            <AvatarFallback>AB</AvatarFallback>
-          </Avatar>
-          <span className=" text-sm   text-card-foreground whitespace-nowrap">
-            {row?.original?.user.name}
-          </span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "email",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Id
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <Badge
-        variant="soft"
-        color={
-          (row.getValue("status") === "failed" && "destructive") ||
-          (row.getValue("status") === "success" && "success") ||
-          (row.getValue("status") === "processing" && "info")
-        }
-        className=" capitalize"
-      >
-        {row.getValue("status")}
-      </Badge>
-    ),
-  },
-
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
+    accessorKey: "nom",
+    header: ({ column }) => {
       return (
-        <div className=" text-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nom
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       );
     },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("nom")}</div>,
   },
+  {
+    accessorKey: "num_tele",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Numero de Telephone
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("num_tele")}</div>,
+  },
+  {
+    accessorKey: "nbr_jrs",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nombre des Jours
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("nbr_jrs")}</div>,
+  },
+  {
+    accessorKey: "num_planche",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Numéro de la Planche
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("num_planche")}</div>,
+  },
+  {
+    accessorKey: "date_sortie",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date Sortie
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("date_sortie")}</div>,
+  },
+  {
+    accessorKey: "date_rentree",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date Rentrée
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("date_rentree")}</div>,
+  },
+  {
+    accessorKey: "prix_planche",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Prix Planche
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("prix_planche")}</div>,
+  },
+  {
+    accessorKey: "prix_combine",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Prix Combine
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("prix_combine")}</div>,
+  },
+  {
+    accessorKey: "prix_cours",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Prix Cours
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("prix_cours")}</div>,
+  },
+  {
+    accessorKey: "note",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Note
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap">{row.getValue("note")}</div>,
+  },
+
+
 ];
 
 export function BasicDataTable() {
@@ -188,31 +255,94 @@ export function BasicDataTable() {
     },
   });
 
+
+  const exportToExcel = () => {
+    // Prepare the data for Excel
+    const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
+    const workbook = XLSX.utils.book_new(); // Create a new workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
+  
+    // Generate a file name
+    const fileName = "table_data.xlsx";
+  
+    // Save the workbook
+    XLSX.writeFile(workbook, fileName);
+  };
+
+  const printTable = () => {
+    const printWindow = window.open("", "_blank");
+    const tableHtml = `
+      <html>
+        <head>
+          <title>Print Table</title>
+          <style>
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            th, td {
+              border: 1px solid black;
+              padding: 8px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Table Data</h2>
+          <table>
+            <thead>
+              <tr>
+                ${columns.map(column => `<th>${column.header({ column })}</th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(row => `
+                <tr>
+                  ${columns.map(column => `<td>${row[column.accessorKey]}</td>`).join("")}
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+    printWindow.document.write(tableHtml);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <>
       <div className="flex items-center flex-wrap gap-2  px-4">
         <Input
-          placeholder="Filter emails..."
-          value={table.getColumn("email")?.getFilterValue() || ""}
+          placeholder="Filter Nom..."
+          value={table.getColumn("nom")?.getFilterValue() || ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("nom")?.setFilterValue(event.target.value)
           }
           className="max-w-sm min-w-[200px] h-10"
         />
 
         <Button asChild variant="outline" className="text-xs font-semibold text-primary-500">
-          <Link href="#">
+          <Link href="#" onClick={() => {
+            exportToExcel()
+          }}>
             <Download className="w-3.5 h-3.5 ltr:mr-1.5 rtl:ml-1.5" />
-            <span>Invoice PDF</span>
+            <span>Rapport Excel</span>
           </Link>
         </Button>
-        <Button className="text-xs font-semibold ">
-          <Icon icon="heroicons:printer" className="w-5 h-5 ltr:mr-1 rtl:ml-1" /> Print
+        <Button className="text-xs font-semibold " onClick={() => {
+          printTable()
+        }}>
+          <Icon icon="heroicons:printer" className="w-5 h-5 ltr:mr-1 rtl:ml-1" /> Imprimer
         </Button>
 
         <DatePickerWithRange />
 
-        {/* <DropdownMenu>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -237,7 +367,7 @@ export function BasicDataTable() {
                 );
               })}
           </DropdownMenuContent>
-        </DropdownMenu> */}
+        </DropdownMenu>
       </div>
       <div>
         <Table >
@@ -260,8 +390,8 @@ export function BasicDataTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {table?.getRowModel().rows?.length ? (
+              table?.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
