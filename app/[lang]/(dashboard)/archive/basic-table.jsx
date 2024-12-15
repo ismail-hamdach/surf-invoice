@@ -261,10 +261,10 @@ export function BasicDataTable() {
     const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
     const workbook = XLSX.utils.book_new(); // Create a new workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
-  
+
     // Generate a file name
     const fileName = "table_data.xlsx";
-  
+
     // Save the workbook
     XLSX.writeFile(workbook, fileName);
   };
@@ -422,8 +422,7 @@ export function BasicDataTable() {
 
       <div className="flex items-center flex-wrap gap-4 px-4 py-4">
         <div className="flex-1 text-sm text-muted-foreground whitespace-nowrap">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} lignes trouvées
         </div>
 
         <div className="flex gap-2  items-center">

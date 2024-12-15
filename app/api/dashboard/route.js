@@ -13,16 +13,45 @@ export async function GET() {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.execute(
-      'SELECT SUM(quantity) as totalQuantity, SUM(quantity * price) as totalPrice FROM products'
+      `
+      SELECT
+        SUM(
+            prix_planche + prix_combine + prix_cours
+        ) AS total_sum,
+        SUM(
+            CASE WHEN DATE(created_at) = CURDATE() THEN prix_planche + prix_combine + prix_cours ELSE 0
+            END) AS total_today,
+        SUM(
+            CASE WHEN MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) THEN prix_planche + prix_combine + prix_cours ELSE 0
+            END) AS total_this_month,
+            SUM(
+                CASE WHEN YEAR(created_at) = YEAR(CURDATE()) THEN prix_planche + prix_combine + prix_cours ELSE 0
+                END) AS total_this_year
+        FROM
+            commandes;
+      `
     );
-    const list = await connection.execute('SELECT * FROM products ORDER BY products.created_at DESC');
+    const commandes = await connection.execute(`
+      SELECT
+          *
+      FROM
+          commandes
+      WHERE
+          DATE(created_at) = CURDATE()
+      ORDER BY
+          created_at
+      DESC
+          ;
+      `);
 
     connection.release();
 
     return new Response(JSON.stringify({
-      totalQuantity: rows[0].totalQuantity || 0,
-      totalPrice: rows[0].totalPrice || 0,
-      data: list[0] || []
+      total_sum: rows[0].total_sum || 0,
+      total_today: rows[0].total_today || 0,
+      total_this_month: rows[0].total_this_month || 0,
+      total_this_year: rows[0].total_this_year || 0 ,
+      commandes: commandes[0] || []
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

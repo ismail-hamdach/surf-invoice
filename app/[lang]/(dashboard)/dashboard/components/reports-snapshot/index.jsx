@@ -22,8 +22,7 @@ const eventCountSeries = [
 ];
 
 
-const ReportsSnapshot = ({ trans, totalQty,
-  totalPrice, title = trans.raport }) => {
+const ReportsSnapshot = ({ trans, totalDay = 0, totalMonth = 0, totalYear = 0, title = trans.raport }) => {
   const { theme: config, setTheme: setConfig } = useThemeStore();
   const { theme: mode } = useTheme();
   const theme = themes.find((theme) => theme.name === config);
@@ -37,22 +36,22 @@ const ReportsSnapshot = ({ trans, totalQty,
     })`;
   const tabsTrigger = [
     {
-      value: "all",
+      value: "day",
       text: trans.total_jour || "totale du Jour",
-      total: totalQty + " DH",
+      total: totalDay + " DH",
       color: "primary",
     },
     {
-      value: "event",
+      value: "month",
       text: trans.total_mois || "Totale du Mois",
-      total: totalPrice + " DH",
+      total: totalMonth + " DH",
       color: "success",
     },
     {
-      value: "event",
+      value: "year",
       text: trans.total_annee || "Totale de l'année",
-      total: totalPrice + " DH",
-      color: "success",
+      total: totalYear + " DH",
+      color: "info",
     },
   ];
   const tabsContentData = [
@@ -91,10 +90,10 @@ const ReportsSnapshot = ({ trans, totalQty,
                 className={cn(
                   "flex flex-col gap-1.5 p-4 overflow-hidden   items-start  relative before:absolute before:left-1/2 before:-translate-x-1/2 before:bottom-1 before:h-[2px] before:w-9 before:bg-primary/50 dark:before:bg-primary-foreground before:hidden data-[state=active]:shadow-none data-[state=active]:before:block",
                   {
-                    "bg-primary/30 data-[state=active]:bg-primary/30 dark:bg-primary/70": item.color === "primary",
-                    "bg-orange-400 data-[state=active]:bg-orange-200 dark:bg-orange-500": item.color === "warning",
-                    "bg-green-200 data-[state=active]:bg-green-200 dark:bg-green-500": item.color === "success",
-                    "bg-cyan-400 data-[state=active]:bg-cyan-200 dark:bg-cyan-500 ": item.color === "info",
+                    "bg-primary/30 data-[state=active]:bg-primary/45 dark:bg-primary/70": item.color === "primary",
+                    "bg-orange-400 data-[state=active]:bg-orange-300 dark:bg-orange-500": item.color === "warning",
+                    "bg-green-200 data-[state=active]:bg-green-300 dark:bg-green-500": item.color === "success",
+                    "bg-cyan-200 data-[state=active]:bg-cyan-300 dark:bg-cyan-500 ": item.color === "info",
                   }
                 )}
               >
@@ -103,9 +102,9 @@ const ReportsSnapshot = ({ trans, totalQty,
                     "h-10 w-10 rounded-full bg-primary/40 absolute -top-3 -right-3 ring-8 ring-primary/30",
                     {
                       "bg-primary/50  ring-primary/20 dark:bg-primary dark:ring-primary/40": item.color === "primary",
-                      "bg-orange-200 ring-orange-100 dark:bg-orange-300 dark:ring-orange-400": item.color === "warning",
-                      "bg-green-200 ring-green-100 dark:bg-green-300 dark:ring-green-400": item.color === "success",
-                      "bg-cyan-200 ring-cyan-100 dark:bg-cyan-300 dark:ring-cyan-400": item.color === "info",
+                      "bg-orange-300 ring-orange-100 dark:bg-orange-300 dark:ring-orange-400": item.color === "warning",
+                      "bg-green-300 ring-green-100 dark:bg-green-300 dark:ring-green-400": item.color === "success",
+                      "bg-cyan-300 ring-cyan-100 dark:bg-cyan-300 dark:ring-cyan-400": item.color === "info",
                     }
                   )}
                 ></span>

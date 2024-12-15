@@ -55,10 +55,10 @@ const DashboardPageView = ({ trans }) => {
       </div>
       {/* reports area */}
 
-      <ReportsSnapshot trans={trans} totalQty={totals?.totalQuantity || 0} totalPrice={totals?.totalPrice || 0} />
+      <ReportsSnapshot trans={trans} totalDay={totals?.totalDay || 0} totalMonth={totals?.totalMonth || 0} totalYear = {totals?.totalYear || 0} />
 
       <Card title={trans.listProduct}>
-        <BasicDataTable />
+        <BasicDataTable trans={trans} data={totals.data}/>
         {/* <FixedHeader trans={trans} data={totals.data} /> */}
       </Card>
 

@@ -39,7 +39,7 @@ import { Download } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { testData, data } from "./data";
+// import { testData, data } from "./data";
 import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 
@@ -230,7 +230,7 @@ const columns = [
 
 ];
 
-export function BasicDataTable() {
+export function BasicDataTable({ trans,  data = [] }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -255,64 +255,6 @@ export function BasicDataTable() {
     },
   });
 
-
-  const exportToExcel = () => {
-    // Prepare the data for Excel
-    const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
-    const workbook = XLSX.utils.book_new(); // Create a new workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
-
-    // Generate a file name
-    const fileName = "table_data.xlsx";
-
-    // Save the workbook
-    XLSX.writeFile(workbook, fileName);
-  };
-
-  const printTable = () => {
-    const printWindow = window.open("", "_blank");
-    const tableHtml = `
-      <html>
-        <head>
-          <title>Print Table</title>
-          <style>
-            table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            th, td {
-              border: 1px solid black;
-              padding: 8px;
-              text-align: left;
-            }
-            th {
-              background-color: #f2f2f2;
-            }
-          </style>
-        </head>
-        <body>
-          <h2>Table Data</h2>
-          <table>
-            <thead>
-              <tr>
-                ${columns.map(column => `<th>${column.header({ column })}</th>`).join("")}
-              </tr>
-            </thead>
-            <tbody>
-              ${data.map(row => `
-                <tr>
-                  ${columns.map(column => `<td>${row[column.accessorKey]}</td>`).join("")}
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `;
-    printWindow.document.write(tableHtml);
-    printWindow.document.close();
-    printWindow.print();
-  };
 
   return (
     <>
@@ -394,7 +336,7 @@ export function BasicDataTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-left"
                 >
                   No results.
                 </TableCell>
@@ -406,8 +348,7 @@ export function BasicDataTable() {
 
       <div className="flex items-center flex-wrap gap-4 px-4 py-4">
         <div className="flex-1 text-sm text-muted-foreground whitespace-nowrap">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} lignes trouvées
         </div>
 
         <div className="flex gap-2  items-center">
