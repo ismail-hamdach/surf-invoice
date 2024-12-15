@@ -1,73 +1,67 @@
 "use client";
 import { useState, useEffect } from "react";
-import ReportsSnapshot from "./components/reports-snapshot";
-import FormGrid from "./components/form-grid";
-import FixedHeader from "./components/fixed-header";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast as reToast } from "react-hot-toast";
 import BasicDataTable from "./basic-table";
+import axios from 'axios';
 
 
 const DashboardPageView = ({ trans }) => {
-  const [totals, setTotals] = useState({ totalQuantity: 0, totalPrice: 0, list: [] });
+  const [totals, setTotals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState({
+    from: new Date(new Date().setHours(0, 0, 0, 0)), // Start of today
+    to: new Date(new Date().setHours(23, 59, 59, 999)) // End of today
+  });
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    async function fetchCommandes(startDate, endDate) {
+      setIsLoading(true);
       try {
-        const response = await fetch('/api/dashboard');
-        const data = await response.json();
+        const response = await axios.get('/api/archive', {
+          params: { start_date: startDate, end_date: endDate },
+        });
+
+        if (response.status !== 200) {
+          console.error('Error fetching data:', response.data);
+          return;
+        }
+
+        const data = await response.data;
         setTotals(data);
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is reset
       }
-    };
-    fetchDashboardData();
-  }, []);
-
-  const handleSubmit = async (event, formData, setIsLoading) => {
-    event.preventDefault();
-    try {
-      setIsLoading(true)
-      const response = await fetch('/api/add-product', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      setTotals(data); // Assuming the API returns updated totals
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      reToast.error("This didn't work.")
-    } finally {
-      reToast.success("Successfully added!")
-      setIsLoading(false)
     }
-  };
+    if (!selectedDate?.from && !selectedDate?.to)
+      setSelectedDate({
+        from: new Date(new Date().setHours(0, 0, 0, 0)), // Start of today
+        to: new Date(new Date().setHours(23, 59, 59, 999)) // End of today
+      });
+
+    // Example usage
+    fetchCommandes(selectedDate?.from, selectedDate?.to);
+  }, [selectedDate]);
+
+
 
   return (
     <div className="space-y-6 mt-6">
-
-      {/* reports area */}
-
 
       <Card>
         <CardHeader>
           <CardTitle>{trans?.archive || "Archivage"}</CardTitle>
         </CardHeader>
         <CardContent>
-          <BasicDataTable />
+          <BasicDataTable isLoading = {isLoading} trans={trans} data={totals.commandes} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
         </CardContent>
       </Card>
-
-
-      {/* . */}
 
     </div>
   );

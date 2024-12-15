@@ -41,7 +41,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 // import { testData, data } from "./data";
 import { Icon } from "@iconify/react";
-import { cn } from "@/lib/utils";
+import { cn, formatDate, formatTime } from "@/lib/utils";
 
 // const columns = [
 //   "Id",
@@ -149,10 +149,10 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_sortie")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_sortie")) + " " + formatTime(row.getValue("date_sortie"))}</div>,
   },
   {
-    accessorKey: "date_rentree",
+    accessorKey: "date_rentre",
     header: ({ column }) => {
       return (
         <Button
@@ -164,7 +164,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_rentree")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_rentre")) + " " + formatTime(row.getValue("date_rentre"))}</div>,
   },
   {
     accessorKey: "prix_planche",
@@ -179,7 +179,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_planche")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_planche").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_combine",
@@ -194,7 +194,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_combine")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_combine").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_cours",
@@ -209,7 +209,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_cours")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_cours").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "note",
@@ -230,7 +230,7 @@ const columns = [
 
 ];
 
-export function BasicDataTable({ trans,  data = [] }) {
+export function BasicDataTable({ trans, data = [], isLoading }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -316,32 +316,42 @@ export function BasicDataTable({ trans,  data = [] }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table?.getRowModel().rows?.length ? (
-              table?.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
+            {isLoading ?
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns.length - columns.length / 2}
                   className="h-24 text-left"
                 >
-                  No results.
+                  Loading...
                 </TableCell>
               </TableRow>
-            )}
+              :
+              table?.getRowModel().rows?.length ? (
+                table?.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length - columns.length / 2}
+                    className="h-24 text-left"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
       </div>

@@ -22,7 +22,7 @@ const eventCountSeries = [
 ];
 
 
-const ReportsSnapshot = ({ trans, totalDay = 0, totalMonth = 0, totalYear = 0, title = trans.raport }) => {
+const ReportsSnapshot = ({ trans, total_sum = 0, totalDay = 0, totalMonth = 0, totalYear = 0, title = trans.raport }) => {
   const { theme: config, setTheme: setConfig } = useThemeStore();
   const { theme: mode } = useTheme();
   const theme = themes.find((theme) => theme.name === config);
@@ -38,19 +38,25 @@ const ReportsSnapshot = ({ trans, totalDay = 0, totalMonth = 0, totalYear = 0, t
     {
       value: "day",
       text: trans.total_jour || "totale du Jour",
-      total: totalDay + " DH",
+      total: totalDay.toFixed(2) + " DH",
       color: "primary",
     },
     {
       value: "month",
       text: trans.total_mois || "Totale du Mois",
-      total: totalMonth + " DH",
+      total: totalMonth.toFixed(2) + " DH",
       color: "success",
     },
     {
       value: "year",
       text: trans.total_annee || "Totale de l'année",
-      total: totalYear + " DH",
+      total: totalYear.toFixed(2) + " DH",
+      color: "info",
+    },
+    {
+      value: "total",
+      text: trans.total || "Totale",
+      total: total_sum.toFixed(2) + " DH",
       color: "info",
     },
   ];
@@ -82,7 +88,7 @@ const ReportsSnapshot = ({ trans, totalDay = 0, totalMonth = 0, totalYear = 0, t
       </CardHeader>
       <CardContent className="p-1 md:p-5">
         <Tabs defaultValue="all">
-          <TabsList className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6 justify-start w-full bg-transparent h-full">
+          <TabsList className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6 justify-start w-full bg-transparent h-full">
             {tabsTrigger.map((item, index) => (
               <TabsTrigger
                 key={`report-trigger-${index}`}

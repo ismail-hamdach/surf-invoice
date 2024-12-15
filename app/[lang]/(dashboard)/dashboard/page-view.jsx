@@ -8,16 +8,19 @@ import { toast as reToast } from "react-hot-toast";
 import BasicDataTable from "./basic-table";
 
 const DashboardPageView = ({ trans }) => {
-  const [totals, setTotals] = useState({ totalQuantity: 0, totalPrice: 0, list: [] });
-
+  const [totals, setTotals] = useState({ total_sum: 0, total_today: 0, total_this_month: 0, total_this_year: 0, commandes: [] });
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        setIsLoading(true)
         const response = await fetch('/api/dashboard');
         const data = await response.json();
         setTotals(data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
+      }finally{
+        setIsLoading(false)
       }
     };
     fetchDashboardData();
@@ -55,10 +58,10 @@ const DashboardPageView = ({ trans }) => {
       </div>
       {/* reports area */}
 
-      <ReportsSnapshot trans={trans} totalDay={totals?.totalDay || 0} totalMonth={totals?.totalMonth || 0} totalYear = {totals?.totalYear || 0} />
+      <ReportsSnapshot trans={trans} total_sum={totals?.total_sum || 0} totalDay={totals?.total_today || 0} totalMonth={totals?.total_this_month || 0} totalYear={totals?.total_this_year || 0} />
 
       <Card title={trans.listProduct}>
-        <BasicDataTable trans={trans} data={totals.data}/>
+        <BasicDataTable trans={trans} data={totals.commandes} isLoading = {isLoading} />
         {/* <FixedHeader trans={trans} data={totals.data} /> */}
       </Card>
 

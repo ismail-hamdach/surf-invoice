@@ -39,9 +39,9 @@ import { Download } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { testData, data } from "./data";
+// import { testData, data } from "./data";
 import { Icon } from "@iconify/react";
-import { cn } from "@/lib/utils";
+import { cn, formatDate, formatTime } from "@/lib/utils";
 
 // const columns = [
 //   "Id",
@@ -149,10 +149,10 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_sortie")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_sortie")) + " " + formatTime(row.getValue("date_sortie"))}</div>,
   },
   {
-    accessorKey: "date_rentree",
+    accessorKey: "date_rentre",
     header: ({ column }) => {
       return (
         <Button
@@ -164,7 +164,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_rentree")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_rentre")) + " " + formatTime(row.getValue("date_rentre"))}</div>,
   },
   {
     accessorKey: "prix_planche",
@@ -179,7 +179,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_planche")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_planche").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_combine",
@@ -194,7 +194,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_combine")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_combine").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_cours",
@@ -209,7 +209,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_cours")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_cours").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "note",
@@ -230,7 +230,7 @@ const columns = [
 
 ];
 
-export function BasicDataTable() {
+export function BasicDataTable({ trans, data = [], isLoading }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -255,64 +255,6 @@ export function BasicDataTable() {
     },
   });
 
-
-  const exportToExcel = () => {
-    // Prepare the data for Excel
-    const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
-    const workbook = XLSX.utils.book_new(); // Create a new workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
-
-    // Generate a file name
-    const fileName = "table_data.xlsx";
-
-    // Save the workbook
-    XLSX.writeFile(workbook, fileName);
-  };
-
-  const printTable = () => {
-    const printWindow = window.open("", "_blank");
-    const tableHtml = `
-      <html>
-        <head>
-          <title>Print Table</title>
-          <style>
-            table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            th, td {
-              border: 1px solid black;
-              padding: 8px;
-              text-align: left;
-            }
-            th {
-              background-color: #f2f2f2;
-            }
-          </style>
-        </head>
-        <body>
-          <h2>Table Data</h2>
-          <table>
-            <thead>
-              <tr>
-                ${columns.map(column => `<th>${column.header({ column })}</th>`).join("")}
-              </tr>
-            </thead>
-            <tbody>
-              ${data.map(row => `
-                <tr>
-                  ${columns.map(column => `<td>${row[column.accessorKey]}</td>`).join("")}
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `;
-    printWindow.document.write(tableHtml);
-    printWindow.document.close();
-    printWindow.print();
-  };
 
   return (
     <>
@@ -374,7 +316,14 @@ export function BasicDataTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {table?.getRowModel().rows?.length ? (
+            {isLoading ? <TableRow>
+              <TableCell
+                colSpan={columns.length - columns.length / 2}
+                className="h-24 text-left"
+              >
+                Loading...
+              </TableCell>
+            </TableRow> : table?.getRowModel().rows?.length ? (
               table?.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -393,8 +342,8 @@ export function BasicDataTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
+                  colSpan={columns.length - columns.length / 2}
+                  className="h-24 text-left"
                 >
                   No results.
                 </TableCell>

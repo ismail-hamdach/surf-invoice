@@ -2,7 +2,7 @@
 import * as React from "react";
 import * as XLSX from "xlsx";
 
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -14,14 +14,11 @@ import {
 import DatePickerWithRange from "@/components/date-picker-with-range";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -36,28 +33,8 @@ import {
 import Link from "next/link";
 import { Download } from "lucide-react";
 
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { testData, data } from "./data";
 import { Icon } from "@iconify/react";
-import { cn } from "@/lib/utils";
-
-// const columns = [
-//   "Id",
-//   "Nom",
-//   "Numero de Telephone",
-//   "Nombre des Jours",
-//   "Numéro de la Planche",
-//   "Date Sortie",
-//   "Date Rentrée",
-//   "Prix Planche",
-//   "Prix Combine",
-//   "Prix Cours",
-//   "Note",
-
-// ]
-
+import { cn, formatDate, formatTime } from "@/lib/utils";
 
 
 const columns = [
@@ -149,10 +126,10 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_sortie")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_sortie")) + " " + formatTime(row.getValue("date_sortie"))}</div>,
   },
   {
-    accessorKey: "date_rentree",
+    accessorKey: "date_rentre",
     header: ({ column }) => {
       return (
         <Button
@@ -164,7 +141,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("date_rentree")}</div>,
+    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{formatDate(row.getValue("date_rentre")) + " " + formatTime(row.getValue("date_rentre"))}</div>,
   },
   {
     accessorKey: "prix_planche",
@@ -179,7 +156,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_planche")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_planche").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_combine",
@@ -194,7 +171,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_combine")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_combine").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "prix_cours",
@@ -209,7 +186,7 @@ const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase whitespace-nowrap text-center">{row.getValue("prix_cours")}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap text-center">{row.getValue("prix_cours").toFixed(2) + " DH"}</div>,
   },
   {
     accessorKey: "note",
@@ -230,7 +207,7 @@ const columns = [
 
 ];
 
-export function BasicDataTable() {
+export function BasicDataTable({ trans, data = [], selectedDate, setSelectedDate, isLoading = false }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -258,12 +235,23 @@ export function BasicDataTable() {
 
   const exportToExcel = () => {
     // Prepare the data for Excel
-    const worksheet = XLSX.utils.json_to_sheet(data); // Convert data to a worksheet
+    const formattedData = data.map(item => ({
+      ...item,
+      date_sortie: formatDate(item.date_sortie) + " " + formatTime(item.date_sortie), // Format date_sortie
+      date_rentre: formatDate(item.date_rentre) + " " + formatTime(item.date_rentre), // Format date_rentre
+      created_at: formatDate(item.created_at) + " " + formatTime(item.created_at), // Format created_at
+      prix_planche: item.prix_planche.toFixed(2),
+      prix_combine: item.prix_combine.toFixed(2),
+      prix_cours: item.prix_cours.toFixed(2),
+
+
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(formattedData); // Convert data to a worksheet
     const workbook = XLSX.utils.book_new(); // Create a new workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); // Append the worksheet to the workbook
 
     // Generate a file name
-    const fileName = "table_data.xlsx";
+    const fileName = `table_data_${formatDate(selectedDate.from)}_${formatDate(selectedDate.to)}.xlsx`;
 
     // Save the workbook
     XLSX.writeFile(workbook, fileName);
@@ -340,7 +328,7 @@ export function BasicDataTable() {
           <Icon icon="heroicons:printer" className="w-5 h-5 ltr:mr-1 rtl:ml-1" /> Imprimer
         </Button>
 
-        <DatePickerWithRange />
+        <DatePickerWithRange selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -390,32 +378,41 @@ export function BasicDataTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {table?.getRowModel().rows?.length ? (
-              table?.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+            {isLoading ? <TableRow>
+              <TableCell
+                colSpan={columns.length - columns.length / 2 - columns.length / 2}
+                className="h-24 text-center"
+              >
+                Loading ...
+              </TableCell>
+            </TableRow> :
+
+              table?.getRowModel().rows?.length ? (
+                table?.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length - columns.length / 2 - columns.length / 2}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
+              )}
           </TableBody>
         </Table>
       </div>

@@ -28,7 +28,7 @@ const FormGrid = ({ trans, submit }) => {
         <div className="col-span-1">
           <Input
             type="text"
-            name="quantity"
+            name="nom"
             value={formData.nom}
             onChange={handleChange}
             placeholder={trans.form_nom || "Nom"}
@@ -49,8 +49,8 @@ const FormGrid = ({ trans, submit }) => {
         <div className="col-span-1">
           <Input
             type="number"
-            name="nbr_jours"
-            value={formData.nbr_jours}
+            name="nbr_jrs"
+            value={formData.nbr_jrs}
             onChange={handleChange}
             placeholder={trans.form_nbr_jours || "Nombre des jours"}
             required
@@ -84,8 +84,8 @@ const FormGrid = ({ trans, submit }) => {
         <div className="col-span-1">
           <Input
             type={dateEntreeType}
-            name="date_retour"
-            value={formData.date_retour}
+            name="date_rentre"
+            value={formData.date_rentre}
             onChange={handleChange}
             onBlur={() => setDateEntreeType("text")} // {{ edit_3 }}
             onFocus={() => setDateEntreeType("datetime-local")} // {{ edit_4 }}

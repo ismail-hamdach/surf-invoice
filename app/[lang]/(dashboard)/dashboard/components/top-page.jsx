@@ -142,7 +142,7 @@ const TopPage = () => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns.length - columns.length / 2}
                   className="h-24 text-center"
                 >
                   No results.

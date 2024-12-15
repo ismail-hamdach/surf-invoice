@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTheme } from "next-themes";
-export default function DatePickerWithRange({ className }) {
+export default function DatePickerWithRange({ className, selectedDate, setSelectedDate }) {
   const [date, setDate] = React.useState(null);
   const { theme: mode } = useTheme();
 
@@ -28,14 +28,14 @@ export default function DatePickerWithRange({ className }) {
             })}
           >
             <CalendarIcon className="ltr:mr-2 rtl:ml-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {selectedDate?.from ? (
+              selectedDate.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(selectedDate.from, "LLL dd, y")} -{" "}
+                  {format(selectedDate.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(selectedDate.from, "LLL dd, y")
               )
             ) : (
               <span>Pick a date</span>
@@ -46,9 +46,9 @@ export default function DatePickerWithRange({ className }) {
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
+            defaultMonth={selectedDate?.from}
+            selected={selectedDate}
+            onSelect={setSelectedDate}
             numberOfMonths={2}
           />
         </PopoverContent>

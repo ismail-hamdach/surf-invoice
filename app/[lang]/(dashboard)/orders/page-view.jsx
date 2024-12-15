@@ -8,16 +8,20 @@ import { toast as reToast } from "react-hot-toast";
 import BasicDataTable from "./basic-table"
 
 const DashboardPageView = ({ trans }) => {
-  const [totals, setTotals] = useState({ totalQuantity: 0, totalPrice: 0, list: [] });
+  const [totals, setTotals] = useState({ total_sum: 0, total_today: 0, total_this_month: 0, total_this_year: 0, commandes: [] });
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setIsLoading(true)
       try {
         const response = await fetch('/api/dashboard');
         const data = await response.json();
         setTotals(data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
+      }finally{
+        setIsLoading(false)
       }
     };
     fetchDashboardData();
@@ -27,15 +31,16 @@ const DashboardPageView = ({ trans }) => {
     event.preventDefault();
     try {
       setIsLoading(true)
-      const response = await fetch('/api/add-product', {
+      let response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
+      response = await fetch('/api/dashboard');
       const data = await response.json();
-      setTotals(data); // Assuming the API returns updated totals
+      setTotals(data);
     } catch (error) {
       console.error('Error submitting form:', error);
       reToast.error("This didn't work.")
@@ -63,9 +68,7 @@ const DashboardPageView = ({ trans }) => {
         </div>
       </div>
       <Card title={trans.listProduct}>
-        {/* <CardContent className="mx-5"> */}
-          <BasicDataTable />
-        {/* </CardContent> */}
+        <BasicDataTable isLoading={isLoading} trans={trans} data={totals.commandes} />
       </Card>
 
     </div>
