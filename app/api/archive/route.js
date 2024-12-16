@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import { createPool } from "@/provider/mysql.provider"
 
 export const dynamic = 'force-dynamic';
 
@@ -8,12 +8,7 @@ export async function GET(request) {
   const start_date = url.searchParams.get('start_date');
   const end_date = url.searchParams.get('end_date');
 
-  const pool = mysql.createPool({
-    host: process.env.NEXT_DB_HOST,
-    user: process.env.NEXT_DB_USER,
-    password: process.env.NEXT_DB_PWD,
-    database: process.env.NEXT_DB_NAME
-  });
+  const pool = createPool()
 
   try {
     const connection = await pool.getConnection();
@@ -47,7 +42,7 @@ export async function GET(request) {
       total_sum: rows[0].total_sum || 0,
       total_today: rows[0].total_today || 0,
       total_this_month: rows[0].total_this_month || 0,
-      total_this_year: rows[0].total_this_year || 0 ,
+      total_this_year: rows[0].total_this_year || 0,
       commandes: commandes[0] || []
     }), {
       status: 200,

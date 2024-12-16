@@ -1,5 +1,5 @@
 // pages/api/add-product.js
-import mysql from 'mysql2/promise';
+import { createPool } from "@/provider/mysql.provider"
 
 export async function POST(req) {
   const { nom, num_tele, nbr_jrs, num_planche, date_sortie, date_rentre, prix_planche, prix_combine, prix_cours, note } = await req.json();
@@ -12,18 +12,13 @@ export async function POST(req) {
     });
   }
 
-  const pool = mysql.createPool({
-    host: process.env.NEXT_DB_HOST,
-    user: process.env.NEXT_DB_USER,
-    password: process.env.NEXT_DB_PWD,
-    database: process.env.NEXT_DB_NAME
-  });
+  const pool = createPool()
 
   let connection;
   try {
     connection = await pool.getConnection();
     await connection.execute('INSERT INTO `commandes`(`nom`, `num_tele`, `nbr_jrs`, `num_planche`, `date_sortie`, `date_rentre`, `prix_planche`, `prix_combine`, `prix_cours`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [nom, num_tele, nbr_jrs, num_planche, date_sortie, date_rentre, prix_planche, prix_combine, prix_cours, note]);
-    
+
     return new Response(JSON.stringify({ message: 'Product added successfully' }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
